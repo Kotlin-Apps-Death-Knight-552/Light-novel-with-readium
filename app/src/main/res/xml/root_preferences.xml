@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <SwitchPreferenceCompat
+        app:key="darkMode"
+        app:title="Enable Dark Mode" />
+
+
+
+    <PreferenceCategory app:title="Root Folder">
+
+
+        <Preference
+            app:key="base_path"
+            app:title="Select Folder"
+            app:summary=""
+            />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
