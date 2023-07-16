@@ -10,10 +10,11 @@ import com.knightshrestha.lightnovels.localdatabase.tables.BookItem
 import com.knightshrestha.lightnovels.localdatabase.tables.SeriesItem
 import com.knightshrestha.neonnovels.datasources.local.database.CountConverters
 import com.knightshrestha.neonnovels.datasources.local.database.ListConverters
+import com.knightshrestha.neonnovels.datasources.local.database.LocatorConverters
 import com.knightshrestha.neonnovels.datasources.local.database.RelatedTitleConverters
 
 @Database(entities = [SeriesItem::class, BookItem::class], version = 1, exportSchema = false)
-@TypeConverters( ListConverters::class, CountConverters::class, RelatedTitleConverters::class)
+@TypeConverters( ListConverters::class, CountConverters::class, RelatedTitleConverters::class, LocatorConverters::class)
 abstract class MainDatabase : RoomDatabase() {
     abstract fun localDAO(): MainDAO
 

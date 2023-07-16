@@ -7,10 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.navArgs
 import com.knightshrestha.lightnovels.databinding.FragmentReaderBinding
 import com.smartmobilefactory.epubreader.EpubScrollDirection
 import com.smartmobilefactory.epubreader.model.Epub
-import com.smartmobilefactory.epubreader.model.EpubLocation.XPathLocation
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -31,6 +31,9 @@ class ReaderFragment : Fragment() {
 
 //    private lateinit var viewModel: DetailViewModel/
 
+    private val args: ReaderFragmentArgs by navArgs()
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -42,7 +45,7 @@ class ReaderFragment : Fragment() {
 
         loadEpub()!!.doOnSuccess {epub: Epub? ->
             binding.epubView.epub = epub
-            binding.epubView.gotoLocation(XPathLocation.fromXPath(9, "id(\"preface002\")/P[4]"))
+//            binding.epubView.gotoLocation()
         }.subscribe()
 
 
@@ -58,7 +61,7 @@ class ReaderFragment : Fragment() {
             epubSingle = Single.fromCallable {
                 Epub.fromUri(
                     application,
-                    File("/storage/sdcard0/documents/sample.epub").toUri().toString()
+                    File(args.bookPath).toUri().toString()
                 )
             }
                 .subscribeOn(Schedulers.io())

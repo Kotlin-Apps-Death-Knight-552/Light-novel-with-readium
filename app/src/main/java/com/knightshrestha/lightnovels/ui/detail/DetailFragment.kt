@@ -6,10 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.knightshrestha.lightnovels.MainActivity
 import com.knightshrestha.lightnovels.databinding.FragmentDetailBinding
+import com.knightshrestha.lightnovels.localdatabase.tables.BookItem
+import java.io.File
 
 class DetailFragment : Fragment() {
 
@@ -36,11 +37,22 @@ class DetailFragment : Fragment() {
         _binding = FragmentDetailBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        binding.sample.text = args.seriesPath
+        binding.bookListDetail.apply {
 
-        binding.sample.setOnClickListener {
-            findNavController().navigate(DetailFragmentDirections.actionDetailFragmentToReaderFragment())
+            val list = File(args.seriesPath).listFiles()?.filter { !it.isDirectory }?.map { it ->
+                BookItem(
+                    seriesID = 0,
+                    seriesTitle = it.name,
+                    seriesPath = it.absolutePath,
+
+                )
+            }?.sortedBy {
+                it.seriesTitle
+            } ?: emptyList()
+
+            adapter = DetailListAdapter(list)
         }
+
 
 //        activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
 

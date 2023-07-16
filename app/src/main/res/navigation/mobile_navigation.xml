@@ -51,7 +51,11 @@
         android:id="@+id/readerFragment"
         android:name="com.knightshrestha.lightnovels.ui.reader.ReaderFragment"
         android:label="fragment_reader"
-        tools:layout="@layout/fragment_reader" />
+        tools:layout="@layout/fragment_reader" >
+        <argument
+            android:name="book_path"
+            app:argType="string" />
+    </fragment>
 
 
 </navigation>
