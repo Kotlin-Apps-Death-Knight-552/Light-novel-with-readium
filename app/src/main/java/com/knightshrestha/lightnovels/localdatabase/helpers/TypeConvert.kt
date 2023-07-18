@@ -5,7 +5,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.knightshrestha.lightnovels.localdatabase.helpers.AssociatedTitles
 import com.knightshrestha.lightnovels.localdatabase.helpers.Count
-import com.smartmobilefactory.epubreader.model.EpubLocation
+import org.readium.r2.shared.publication.Locator
 import java.lang.reflect.Type
 
 class ListConverters {
@@ -49,13 +49,13 @@ class RelatedTitleConverters {
 
 class LocatorConverters {
     @TypeConverter
-    fun locatorToString(epubLocation: EpubLocation?): String? {
+    fun locatorToString(epubLocation: Locator?): String? {
         return Gson().toJson(epubLocation)
     }
 
     @TypeConverter
-    fun stringToLocation(string: String?): EpubLocation? {
-        val listType: Type = object : TypeToken<EpubLocation>() {}.type
+    fun stringToLocation(string: String?): Locator? {
+        val listType: Type = object : TypeToken<Locator>() {}.type
         return Gson().fromJson(string, listType)
     }
 }
