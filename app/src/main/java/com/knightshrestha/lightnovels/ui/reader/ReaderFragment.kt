@@ -5,7 +5,6 @@ import android.graphics.PointF
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -98,17 +97,17 @@ class ReaderFragment : Fragment(), EpubNavigatorFragment.Listener {
         }
 
 
-        binding.readerEpubContainer.setOnTouchListener (View.OnTouchListener {v, event ->
-            if (event.action == MotionEvent.ACTION_DOWN) {
-                Log.d("touch", "touched")
-                if (actionBar!!.isShowing) {
-                    actionBar!!.hide()
-                } else {
-                    actionBar!!.show()
-                }
-                true
-            } else false
-        })
+//        binding.readerEpubContainer.setOnTouchListener (View.OnTouchListener {v, event ->
+//            if (event.action == MotionEvent.ACTION_DOWN) {
+//                Log.d("touch", "touched")
+//                if (actionBar!!.isShowing) {
+//                    actionBar!!.hide()
+//                } else {
+//                    actionBar!!.show()
+//                }
+//                true
+//            } else false
+//        })
 
 
         navigator = childFragmentManager.findFragmentByTag(navigatorFragmentTag) as Navigator
@@ -123,9 +122,15 @@ class ReaderFragment : Fragment(), EpubNavigatorFragment.Listener {
         Log.d("touch", point.toString())
         val width = navigatorFragment.view?.width?.toFloat() ?: 500f
         when (point.x) {
-            in 0f..(width/3f) -> navigator.goBackward(animated = true)
+            in 0f..(width/3f) -> {
+                navigator.goBackward(animated = true)
+                anim()
+            }
             in (width/3f)..(2 * width/3f) -> anim()
-            in (2 * width/3f)..(width) -> navigator.goForward(animated = true)
+            in (2 * width/3f)..(width) -> {
+                navigator.goForward(animated = true)
+                anim()
+            }
         }
 
         return super.onTap(point)
