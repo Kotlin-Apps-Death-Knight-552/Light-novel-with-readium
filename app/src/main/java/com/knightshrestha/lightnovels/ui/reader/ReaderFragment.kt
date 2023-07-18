@@ -19,7 +19,6 @@ import org.readium.r2.navigator.ExperimentalDecorator
 import org.readium.r2.navigator.Navigator
 import org.readium.r2.navigator.epub.EpubNavigatorFragment
 import org.readium.r2.shared.ExperimentalReadiumApi
-import org.readium.r2.shared.publication.Locator
 import org.readium.r2.shared.publication.Publication
 import org.readium.r2.shared.publication.asset.FileAsset
 import org.readium.r2.streamer.parser.epub.EpubParser
@@ -120,11 +119,19 @@ class ReaderFragment : Fragment(), EpubNavigatorFragment.Listener {
         return binding.root
     }
 
-    override fun onJumpToLocator(locator: Locator) {
-        super.onJumpToLocator(locator)
+    override fun onTap(point: PointF): Boolean {
+        Log.d("touch", point.toString())
+        val width = navigatorFragment.view?.width?.toFloat() ?: 500f
+        when (point.x) {
+            in 0f..(width/3f) -> navigator.goBackward(animated = true)
+            in (width/3f)..(2 * width/3f) -> anim()
+            in (2 * width/3f)..(width) -> navigator.goForward(animated = true)
+        }
+
+        return super.onTap(point)
     }
 
-    override fun onTap(point: PointF): Boolean {
+    private fun anim() {
         if (actionBar!!.isShowing) {
             actionBar!!.hide()
             binding.readerUi.visibility = View.GONE
@@ -134,6 +141,5 @@ class ReaderFragment : Fragment(), EpubNavigatorFragment.Listener {
 
 
         }
-        return super.onTap(point)
     }
 }
