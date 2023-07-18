@@ -27,7 +27,7 @@ class SeriesListAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = values[position]
         holder.title.text = item.seriesTitle
-        holder.synopsis.text = item.seriesSynopsis
+        holder.synopsis.text = ""
         holder.itemView.setOnClickListener {
             holder.itemView.findNavController().navigate(HomeFragmentDirections.actionNavigationHomeToDetailFragment(
                 item.seriesPath
