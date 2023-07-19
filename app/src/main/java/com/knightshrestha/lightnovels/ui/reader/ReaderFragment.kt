@@ -126,7 +126,7 @@ class ReaderFragment : Fragment(), EpubNavigatorFragment.Listener {
             navigator.currentLocator.collect {
                 val current = it.locations.position ?: 0
                 binding.readerProgressbar.progress = current
-                binding.readerProgressLabel.text = "$current out of $total"
+                binding.readerProgressLabel.text = "$current out of $total Position"
             }
 
         }
