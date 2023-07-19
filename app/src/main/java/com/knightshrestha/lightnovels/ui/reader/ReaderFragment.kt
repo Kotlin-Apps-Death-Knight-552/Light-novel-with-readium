@@ -10,16 +10,19 @@ import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commitNow
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.knightshrestha.lightnovels.MainActivity
 import com.knightshrestha.lightnovels.R
 import com.knightshrestha.lightnovels.databinding.FragmentReaderBinding
+import kotlinx.coroutines.launch
 import org.readium.r2.navigator.ExperimentalDecorator
 import org.readium.r2.navigator.Navigator
 import org.readium.r2.navigator.epub.EpubNavigatorFragment
 import org.readium.r2.shared.ExperimentalReadiumApi
 import org.readium.r2.shared.publication.Publication
 import org.readium.r2.shared.publication.asset.FileAsset
+import org.readium.r2.shared.publication.services.positions
 import org.readium.r2.streamer.parser.epub.EpubParser
 import java.io.File
 
@@ -61,6 +64,8 @@ class ReaderFragment : Fragment(), EpubNavigatorFragment.Listener {
 
 
 
+
+
         childFragmentManager.fragmentFactory =
             EpubNavigatorFragment.createFactory(
                 publication = publication,
@@ -77,7 +82,7 @@ class ReaderFragment : Fragment(), EpubNavigatorFragment.Listener {
     }
 
 
-    @SuppressLint("ClickableViewAccessibility")
+    @SuppressLint("ClickableViewAccessibility", "SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -114,6 +119,17 @@ class ReaderFragment : Fragment(), EpubNavigatorFragment.Listener {
         navigatorFragment = navigator as EpubNavigatorFragment
 
 
+        viewLifecycleOwner.lifecycleScope.launch {
+            val total = publication.positions().count()
+            binding.readerProgressbar.max = total
+
+            navigator.currentLocator.collect {
+                val current = it.locations.position ?: 0
+                binding.readerProgressbar.progress = current
+                binding.readerProgressLabel.text = "$current out of $total"
+            }
+
+        }
 
         return binding.root
     }
@@ -124,12 +140,14 @@ class ReaderFragment : Fragment(), EpubNavigatorFragment.Listener {
         when (point.x) {
             in 0f..(width/3f) -> {
                 navigator.goBackward(animated = true)
-                anim()
+                actionBar!!.hide()
+                binding.readerUi.visibility = View.VISIBLE
             }
             in (width/3f)..(2 * width/3f) -> anim()
             in (2 * width/3f)..(width) -> {
                 navigator.goForward(animated = true)
-                anim()
+                actionBar!!.hide()
+                binding.readerUi.visibility = View.VISIBLE
             }
         }
 

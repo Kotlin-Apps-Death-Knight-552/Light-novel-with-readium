@@ -41,13 +41,13 @@ class DetailFragment : Fragment() {
 
             val list = File(args.seriesPath).listFiles()?.filter { !it.isDirectory }?.map { it ->
                 BookItem(
-                    seriesID = 0,
-                    seriesTitle = it.name,
-                    seriesPath = it.absolutePath,
+                    bookTitle = it.name,
+                    bookPath = it.absolutePath,
+                    seriesPath = it.parentFile.absolutePath
 
                 )
             }?.sortedBy {
-                it.seriesTitle
+                it.bookTitle
             } ?: emptyList()
 
             adapter = DetailListAdapter(list)

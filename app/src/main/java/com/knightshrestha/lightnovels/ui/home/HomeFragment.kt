@@ -50,12 +50,6 @@ class HomeFragment : Fragment() {
         val baseFilePath =
             activity?.getPreferences(Context.MODE_PRIVATE)?.getString("root_path", "")
 
-        if (baseFilePath != null && baseFilePath != "") {
-            extracted(baseFilePath, homeViewModel)
-        }
-
-
-
         homeViewModel.seriesList.observe(viewLifecycleOwner) { it ->
             binding.seriesListHome.apply {
                 adapter = SeriesListAdapter(it)
@@ -76,13 +70,20 @@ class HomeFragment : Fragment() {
         homeViewModel: MainViewModel
     ) {
         File(baseFilePath).listFiles()?.forEach { file ->
-            homeViewModel.addSeriesItem(
-                SeriesItem(
-                    seriesTitle = file.name,
-                    seriesPath = file.absolutePath,
+            if (file.isDirectory) {
+                val stuff = file.listFiles().filter { it.extension == "epub" }
+                if (stuff.isNotEmpty()) {
+                    try {
+                        homeViewModel.addSeriesItem(
+                            SeriesItem(
+                                seriesTitle = file.name,
+                                seriesPath = file.absolutePath
+                            )
+                        )
+                    } catch (_:Exception) {}
 
-                    )
-            )
+                }
+            }
         }
     }
 

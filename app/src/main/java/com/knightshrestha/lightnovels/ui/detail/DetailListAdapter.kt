@@ -26,11 +26,11 @@ class DetailListAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = values[position]
-        holder.title.text = item.seriesTitle
+        holder.title.text = item.bookTitle
         holder.itemView.setOnClickListener {
             holder.itemView.findNavController().navigate(
                 DetailFragmentDirections.actionDetailFragmentToReaderFragment(
-                item.seriesPath
+                item.bookPath
             ))
         }
     }
