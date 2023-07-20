@@ -4,10 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.knightshrestha.lightnovels.R
 import com.knightshrestha.lightnovels.databinding.FragmentDashboardBinding
+import com.knightshrestha.lightnovels.localdatabase.viewmodel.MainViewModel
 
 class DashboardFragment : Fragment() {
 
@@ -23,15 +24,20 @@ class DashboardFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val dashboardViewModel =
-            ViewModelProvider(this).get(DashboardViewModel::class.java)
+            ViewModelProvider(this)[MainViewModel::class.java]
 
         _binding = FragmentDashboardBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textDashboard
-        dashboardViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
+        dashboardViewModel.seriesList.observe(viewLifecycleOwner) {
+            binding.dashSeriesCount.text = getString(R.string.dash_series_count, it.size, 0)
         }
+
+        dashboardViewModel.bookList.observe(viewLifecycleOwner) {
+            binding.dashBookCount.text = getString(R.string.dash_book_count, it.size)
+        }
+
+
         return root
     }
 

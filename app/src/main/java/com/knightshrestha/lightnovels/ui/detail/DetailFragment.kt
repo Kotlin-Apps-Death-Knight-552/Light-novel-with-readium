@@ -9,8 +9,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import com.knightshrestha.lightnovels.MainActivity
 import com.knightshrestha.lightnovels.databinding.FragmentDetailBinding
-import com.knightshrestha.lightnovels.localdatabase.tables.BookItem
-import java.io.File
+import com.knightshrestha.lightnovels.localdatabase.tables.SeriesWithBooks
+import com.knightshrestha.lightnovels.localdatabase.viewmodel.MainViewModel
 
 class DetailFragment : Fragment() {
 
@@ -23,6 +23,7 @@ class DetailFragment : Fragment() {
     private val args: DetailFragmentArgs by navArgs()
 
     private lateinit var viewModel: DetailViewModel
+    private lateinit var seriesWithBooks: SeriesWithBooks
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,20 +38,12 @@ class DetailFragment : Fragment() {
         _binding = FragmentDetailBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        binding.bookListDetail.apply {
+        val viewModel = ViewModelProvider(this)[MainViewModel::class.java]
 
-            val list = File(args.seriesPath).listFiles()?.filter { !it.isDirectory }?.map { it ->
-                BookItem(
-                    bookTitle = it.name,
-                    bookPath = it.absolutePath,
-                    seriesPath = it.parentFile.absolutePath
-
-                )
-            }?.sortedBy {
-                it.bookTitle
-            } ?: emptyList()
-
-            adapter = DetailListAdapter(list)
+        viewModel.getSeriesItemWithBooks(args.seriesPath).observe(viewLifecycleOwner) {
+            binding.bookListDetail.apply {
+                adapter = DetailListAdapter(it.bookItems.sortedBy { it.bookTitle })
+            }
         }
 
 

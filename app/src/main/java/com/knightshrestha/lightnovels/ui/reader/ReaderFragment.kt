@@ -10,11 +10,15 @@ import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commitNow
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.knightshrestha.lightnovels.MainActivity
 import com.knightshrestha.lightnovels.R
 import com.knightshrestha.lightnovels.databinding.FragmentReaderBinding
+import com.knightshrestha.lightnovels.localdatabase.helpers.Status
+import com.knightshrestha.lightnovels.localdatabase.tables.BookItem
+import com.knightshrestha.lightnovels.localdatabase.viewmodel.MainViewModel
 import kotlinx.coroutines.launch
 import org.readium.r2.navigator.ExperimentalDecorator
 import org.readium.r2.navigator.Navigator
@@ -34,11 +38,13 @@ class ReaderFragment : Fragment(), EpubNavigatorFragment.Listener {
     // onDestroyView.
     private val binding get() = _binding!!
 
-    lateinit var publication: Publication
-    lateinit var navigator: Navigator
-    lateinit var navigatorFragment: EpubNavigatorFragment
+    private lateinit var publication: Publication
+    private lateinit var navigator: Navigator
+    private lateinit var navigatorFragment: EpubNavigatorFragment
     lateinit var ui: ConstraintLayout
-    var actionBar: androidx.appcompat.app.ActionBar? = null
+    private var actionBar: androidx.appcompat.app.ActionBar? = null
+    private lateinit var viewModel: MainViewModel
+    private lateinit var bookItem: BookItem
 
 
     private val args: ReaderFragmentArgs by navArgs()
@@ -53,18 +59,18 @@ class ReaderFragment : Fragment(), EpubNavigatorFragment.Listener {
         require(file.exists())
         val asset = FileAsset(file)
 
+        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
+
 
         val pub = EpubParser().parse(args.bookPath)?.publication
         if (pub != null) {
             publication = pub
         }
 
+
+
         actionBar = activity.supportActionBar
         actionBar?.title = publication.metadata.title
-
-
-
-
 
         childFragmentManager.fragmentFactory =
             EpubNavigatorFragment.createFactory(
@@ -100,20 +106,6 @@ class ReaderFragment : Fragment(), EpubNavigatorFragment.Listener {
                 navigatorFragmentTag
             )
         }
-
-
-//        binding.readerEpubContainer.setOnTouchListener (View.OnTouchListener {v, event ->
-//            if (event.action == MotionEvent.ACTION_DOWN) {
-//                Log.d("touch", "touched")
-//                if (actionBar!!.isShowing) {
-//                    actionBar!!.hide()
-//                } else {
-//                    actionBar!!.show()
-//                }
-//                true
-//            } else false
-//        })
-
 
         navigator = childFragmentManager.findFragmentByTag(navigatorFragmentTag) as Navigator
         navigatorFragment = navigator as EpubNavigatorFragment
@@ -165,4 +157,17 @@ class ReaderFragment : Fragment(), EpubNavigatorFragment.Listener {
 
         }
     }
+
+    fun onBackButtonPressed() {
+        viewModel.updateBookItem(
+            BookItem(
+                bookPath = bookItem.bookPath,
+                bookTitle = bookItem.bookTitle,
+                locator = navigator.currentLocator.value,
+                seriesPath = bookItem.seriesPath,
+                status = Status.READING
+            )
+        )
+    }
+
 }

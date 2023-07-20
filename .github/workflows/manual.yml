@@ -1,46 +1,22 @@
-name: Automatic App Build
+name: Manual App Build
 
 permissions:
   contents: write
 
 on:
-  push:
-    branches:
-      - master
-    paths-ignore:
-      - 'CHANGELOG.md'
-      - '.github/**'
-      - 'README.md'
-
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Application version"
+        required: true
+        default: "1.0"
+  # push:
+  #   branches:
+  #     - main
 jobs:
-  auto:
-    name: Get App Version
+  build:
+    name: Build Signed APK
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'push'}}
-    outputs:
-      release_commit: ${{ steps.commit_check.outputs.release_commit }}
-      version: ${{ steps.commit_check.outputs.version }}
-    steps:
-      - name: Check Commit Message
-        id: commit_check
-        run: |
-          commit_message="${{ github.event.head_commit.message }}"
-          regex="v([0-9]+(\.[0-9]+)*)"
-          if [[ $commit_message =~ $regex ]]; then
-             version="${BASH_REMATCH[1]}"
-             echo "release_commit=true" >> $GITHUB_OUTPUT
-             echo "version=$version" >> $GITHUB_OUTPUT
-          else 
-             echo "release_commit=false" >> $GITHUB_OUTPUT
-          fi;
-
-  run_job:
-    name: Build app Automatically
-    runs-on: ubuntu-latest
-    needs: auto
-    if: needs.auto.outputs.release_commit == 'true'
-    outputs:
-      version: ${{ needs.auto.outputs.version }}
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK 17
@@ -75,18 +51,18 @@ jobs:
 
       # # Show information about the APK's signing certificates
       # - name: Verify Signature
-      #   run: "$ANDROID_SDK_ROOT/build-tools/33.0.1/apksigner verify --print-certs app/build/outputs/apk/release/Light\ Novels_${{ github.event.inputs.version }}.apk"
+      #   run: "$ANDROID_SDK_ROOT/build-tools/33.0.1/apksigner verify --print-certs app/build/outputs/apk/release/Neon\ Novels_${{ github.event.inputs.version }}.apk"
 
       # Save the APK after the Build job is complete to publish it as a Github release in the next job
       - name: Upload APK
         uses: actions/upload-artifact@v3.1.2
         with:
           name: Light Novels
-          path: "app/build/outputs/apk/release/Light\ Novels_${{ needs.auto.outputs.version }}.apk"
+          path: "app/build/outputs/apk/release/Light\ Novels_${{ github.event.inputs.version }}.apk"
 
   release:
     name: Release APK
-    needs: run_job
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
@@ -95,7 +71,6 @@ jobs:
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}
-          echo ${{ needs.run_job.outputs.version }}
       - name: Download APK from build
         uses: actions/download-artifact@v1
         with:
@@ -106,11 +81,11 @@ jobs:
         uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_REPOSITORY: Light-Novels/Light-novel-with-readium
+          GITHUB_REPOSITORY: Death-Knight-552/Neon-Novels
         with:
-          tag_name: v${{ needs.run_job.outputs.version }}
-          name: Release v${{ needs.run_job.outputs.version }}
+          tag_name: v${{ github.event.inputs.version }}
+          name: Release v${{ github.event.inputs.version }}
           body_path: ${{ github.workspace }}/CHANGELOG.md
           draft: true
           prerelease: false
-          files: Light Novels/Light Novels_${{needs.run_job.outputs.version }}.apk
+          files: Light Novels/Light Novels_${{github.event.inputs.version }}.apk

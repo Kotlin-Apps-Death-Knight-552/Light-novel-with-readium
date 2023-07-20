@@ -57,5 +57,11 @@
             app:argType="string" />
     </fragment>
 
+    <fragment
+        android:id="@+id/navigation_import"
+        android:name="com.knightshrestha.lightnovels.ui.importandsync.ImportAndSyncFragment"
+        android:label="fragment_import_and_sync"
+        tools:layout="@layout/fragment_import_and_sync" />
+
 
 </navigation>
