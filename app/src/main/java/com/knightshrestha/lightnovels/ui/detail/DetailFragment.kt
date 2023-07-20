@@ -23,12 +23,16 @@ class DetailFragment : Fragment() {
     private val args: DetailFragmentArgs by navArgs()
 
     private lateinit var viewModel: DetailViewModel
+    private var actionBar: androidx.appcompat.app.ActionBar? = null
+
     private lateinit var seriesWithBooks: SeriesWithBooks
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val act = activity as MainActivity
-        act.navView?.visibility = View.GONE
+        val activity = activity as MainActivity
+        activity.navView?.visibility = View.GONE
+
+        actionBar = activity.supportActionBar
     }
 
     override fun onCreateView(
@@ -43,6 +47,11 @@ class DetailFragment : Fragment() {
         viewModel.getSeriesItemWithBooks(args.seriesPath).observe(viewLifecycleOwner) {
             binding.bookListDetail.apply {
                 adapter = DetailListAdapter(it.bookItems.sortedBy { it.bookTitle })
+            }
+
+            binding.seriesTitleDetail.text = it.seriesItem.seriesTitle
+            if (actionBar != null) {
+                actionBar!!.title = it.seriesItem.seriesTitle
             }
         }
 

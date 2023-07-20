@@ -81,7 +81,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_REPOSITORY: Death-Knight-552/Neon-Novels
+          GITHUB_REPOSITORY: Light-Novels/Light-novel-with-readium
         with:
           tag_name: v${{ github.event.inputs.version }}
           name: Release v${{ github.event.inputs.version }}
