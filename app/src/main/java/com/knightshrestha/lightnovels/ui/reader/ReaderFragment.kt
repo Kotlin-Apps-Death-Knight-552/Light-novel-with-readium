@@ -25,7 +25,6 @@ import org.readium.r2.navigator.Navigator
 import org.readium.r2.navigator.epub.EpubNavigatorFragment
 import org.readium.r2.shared.ExperimentalReadiumApi
 import org.readium.r2.shared.publication.Publication
-import org.readium.r2.shared.publication.asset.FileAsset
 import org.readium.r2.shared.publication.services.positions
 import org.readium.r2.streamer.parser.epub.EpubParser
 import java.io.File
@@ -57,7 +56,6 @@ class ReaderFragment : Fragment(), EpubNavigatorFragment.Listener {
 
         val file = File(args.bookPath)
         require(file.exists())
-        val asset = FileAsset(file)
 
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
 
@@ -77,6 +75,7 @@ class ReaderFragment : Fragment(), EpubNavigatorFragment.Listener {
                 publication = publication,
                 listener = this,
                 config = EpubNavigatorFragment.Configuration().apply {
+
                     // Register the HTML template for our custom [DecorationStyleAnnotationMark].
 
                 }

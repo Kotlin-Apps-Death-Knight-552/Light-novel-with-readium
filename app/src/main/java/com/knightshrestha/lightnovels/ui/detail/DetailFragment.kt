@@ -50,9 +50,6 @@ class DetailFragment : Fragment() {
             }
 
             binding.seriesTitleDetail.text = it.seriesItem.seriesTitle
-            if (actionBar != null) {
-                actionBar!!.title = it.seriesItem.seriesTitle
-            }
         }
 
 
