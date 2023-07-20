@@ -67,6 +67,24 @@ class ImportAndSyncFragment : Fragment() {
             }
         }
 
+        binding.deleteSeriesBtn.setOnClickListener {
+            viewModel.seriesList.observe(viewLifecycleOwner) { list ->
+                list.forEach {
+                    if (!File(it.seriesPath).exists()) {
+                        viewModel.deleteSeriesItemByPath(it.seriesPath)
+                    }
+                }
+            }
+            viewModel.bookList.observe(viewLifecycleOwner) {list ->
+                list.forEach {
+                    if (!File(it.bookPath).exists()) {
+                        viewModel.deleteBookItem(it)
+                    }
+                }
+
+            }
+        }
+
         return binding.root
     }
 

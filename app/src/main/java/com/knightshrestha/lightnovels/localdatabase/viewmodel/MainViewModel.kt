@@ -55,5 +55,29 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
         }
     }
 
+    fun updateSeriesItem(seriesItem: SeriesItem) {
+        viewModelScope.launch {
+            if (repository.isSeriesItemExist(seriesItem.seriesPath)) {
+                repository.updateSeriesItem(seriesItem)
+            }
+        }
+    }
+
+    fun deleteSeriesItemByPath(seriesPath: String) {
+        viewModelScope.launch {
+            if (repository.isSeriesItemExist(seriesPath)) {
+                repository.deleteSeriesItemByPath(seriesPath)
+            }
+        }
+    }
+
+    fun deleteBookItem(bookItem: BookItem) {
+        viewModelScope.launch {
+            if (repository.isBookItemExist(bookItem.bookPath)) {
+                repository.deleteBookItem(bookItem)
+            }
+        }
+    }
+
 
 }

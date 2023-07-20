@@ -2,6 +2,7 @@ package com.knightshrestha.lightnovels.localdatabase.DAO
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -41,4 +42,16 @@ interface MainDAO {
 
     @Update
     suspend fun updateOneBookItem(bookItem: BookItem)
+
+    @Update
+    suspend fun updateOneSeriesItem(seriesItem: SeriesItem)
+
+    @Delete
+    suspend fun deleteSeriesItem(seriesItem: SeriesItem)
+
+    @Delete
+    suspend fun deleteBookItem(bookItem: BookItem)
+
+    @Query("DELETE FROM series_list WHERE path = :seriesPath")
+    suspend fun deleteSeriesItemByPath(seriesPath: String)
 }

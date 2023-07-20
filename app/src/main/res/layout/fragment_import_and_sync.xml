@@ -12,6 +12,13 @@
         android:layout_height="wrap_content"
         android:text="@string/dash_sync_series"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/delete_series_btn" />
+
+    <Button
+        android:id="@+id/delete_series_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Remove Invalid Series"
         app:layout_constraintTop_toTopOf="parent" />
 
 

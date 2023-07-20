@@ -7,11 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.knightshrestha.lightnovels.MainActivity
 import com.knightshrestha.lightnovels.databinding.FragmentHomeBinding
-import com.knightshrestha.lightnovels.localdatabase.tables.SeriesItem
 import com.knightshrestha.lightnovels.localdatabase.viewmodel.MainViewModel
-import java.io.File
 
 class HomeFragment : Fragment() {
 //    @Deprecated("Deprecated in Java")
@@ -35,6 +35,9 @@ class HomeFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
+    lateinit var listView: RecyclerView
+    private var recyclerViewScrollPosition: Int = 0
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,9 +53,11 @@ class HomeFragment : Fragment() {
         val baseFilePath =
             activity?.getPreferences(Context.MODE_PRIVATE)?.getString("root_path", "")
 
-        homeViewModel.seriesList.observe(viewLifecycleOwner) { it ->
+        listView = binding.seriesListHome
+
+        homeViewModel.seriesList.observe(viewLifecycleOwner) { list ->
             binding.seriesListHome.apply {
-                adapter = SeriesListAdapter(it)
+                adapter = SeriesListAdapter(list.sortedBy { it.seriesTitle })
             }
         }
 
@@ -65,24 +70,16 @@ class HomeFragment : Fragment() {
         return root
     }
 
-    private fun extracted(
-        baseFilePath: String,
-        homeViewModel: MainViewModel
-    ) {
-        File(baseFilePath).listFiles()?.forEach { file ->
-            if (file.isDirectory) {
-                val stuff = file.listFiles().filter { it.extension == "epub" }
-                if (stuff.isNotEmpty()) {
-                    try {
-                        homeViewModel.addSeriesItem(
-                            SeriesItem(
-                                seriesTitle = file.name,
-                                seriesPath = file.absolutePath
-                            )
-                        )
-                    } catch (_:Exception) {}
+    override fun onPause() {
+        super.onPause()
+        recyclerViewScrollPosition = (listView.layoutManager as? LinearLayoutManager)?.findFirstVisibleItemPosition() ?: 0
+    }
 
-                }
+    override fun onResume() {
+        super.onResume()
+        recyclerViewScrollPosition.apply {
+            if (this != RecyclerView.NO_POSITION) {
+                (listView.layoutManager as? LinearLayoutManager)?.scrollToPosition(this)
             }
         }
     }

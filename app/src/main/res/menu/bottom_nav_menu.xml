@@ -9,7 +9,7 @@
         android:title="@string/title_dashboard" />
     <item
         android:id="@+id/navigation_import"
-        android:icon="@drawable/ic_sync"
+        android:icon="@drawable/ic_import"
         android:title="@string/title_sync"/>
 
     <item

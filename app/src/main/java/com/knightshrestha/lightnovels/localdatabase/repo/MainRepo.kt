@@ -15,7 +15,7 @@ class MainRepo(private val seriesDao: MainDAO) {
         return seriesDao.getAllBooks()
     }
 
-     fun getSeriesWithBooks(path: String): LiveData<SeriesWithBooks> {
+    fun getSeriesWithBooks(path: String): LiveData<SeriesWithBooks> {
         return seriesDao.getSeriesItemWithBooks(path)
     }
 
@@ -44,5 +44,18 @@ class MainRepo(private val seriesDao: MainDAO) {
 
     suspend fun updateBookItem(bookItem: BookItem) {
         seriesDao.updateOneBookItem(bookItem)
+
+    }
+
+    suspend fun updateSeriesItem(seriesItem: SeriesItem) {
+        seriesDao.updateOneSeriesItem(seriesItem)
+    }
+
+    suspend fun deleteSeriesItemByPath(seriesPath:String) {
+        seriesDao.deleteSeriesItemByPath(seriesPath)
+    }
+
+    suspend fun deleteBookItem(bookItem: BookItem) {
+        seriesDao.deleteBookItem(bookItem)
     }
 }
