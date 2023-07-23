@@ -30,7 +30,7 @@ class DetailListAdapter(
         holder.itemView.setOnClickListener {
             holder.itemView.findNavController().navigate(
                 DetailFragmentDirections.actionDetailFragmentToReaderFragment(
-                item.bookPath
+                item.seriesPath + item.bookPath
             ))
         }
     }

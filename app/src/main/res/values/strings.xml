@@ -28,7 +28,7 @@
     <string name="title_sync">Import Library</string>
 
 
-<!--    Dashboard-->
+    <!--    Dashboard-->
     <string name="dash_series_count">Currently with %1$d series, %2$d tracked</string>
     <string name="dash_book_count">Currently with %d books</string>
     <string name="dash_sync_series">Sync Series</string>

@@ -34,35 +34,32 @@ class ImportAndSyncFragment : Fragment() {
 
         _binding = FragmentImportAndSyncBinding.inflate(inflater, container, false)
 
+        binding.syncSeriesBtn.text = "Import books from $baseFilePath"
+
         binding.syncSeriesBtn.setOnClickListener {
-            if (baseFilePath != null && baseFilePath != "") {
-                val folderList = listFolderRecursiveWithFolder(baseFilePath)
-
-                folderList.forEach {
-                        viewModel.addSeriesItem(
-                            SeriesItem(
-                                seriesPath = it.absolutePath,
-                                seriesTitle = it.nameWithoutExtension
-                            )
-                        )
-
-                    val fileList = it.listFiles()
-                    fileList.forEach {epub->
-                        if (epub.isFile && epub.name.endsWith(".epub", true)) {
-                            viewModel.addBookItem(
-                                BookItem(
-                                    bookPath = epub.absolutePath,
-                                    bookTitle = epub.nameWithoutExtension,
-                                    seriesPath = it.absolutePath
+            if (File(baseFilePath).exists()) {
+                File(baseFilePath!!).listFiles().forEach { folder->
+                    if (folder.isDirectory) {
+                        val epubFiles = folder.listFiles().filter { it.extension == "epub" }
+                        if ( epubFiles.isNotEmpty()) {
+                            epubFiles.forEach {
+                                viewModel.addBookItem(
+                                    BookItem(
+                                        bookPath = it.absolutePath.removePrefix(folder.absolutePath),
+                                        bookTitle = it.nameWithoutExtension,
+                                        seriesPath = folder.absolutePath
+                                    )
+                                )
+                            }
+                            viewModel.addSeriesItem(
+                                SeriesItem(
+                                    seriesPath = folder.absolutePath,
+                                    seriesTitle = folder.name
                                 )
                             )
                         }
-
                     }
                 }
-
-
-
 
             }
         }
@@ -88,24 +85,6 @@ class ImportAndSyncFragment : Fragment() {
         return binding.root
     }
 
-    private fun listFolderRecursiveWithFolder(path: String): List<File> {
-        val folders = mutableListOf<File>()
-
-        File(path).walkTopDown().forEach {file ->
-            if (file.isDirectory) {
-                val epubFiles = file.listFiles { _, name ->
-                    name.endsWith(".epub", ignoreCase = true)
-                }
-
-                if (epubFiles != null && epubFiles.isNotEmpty()) {
-                    folders.add(file)
-                }
-            }
-
-        }
-
-        return folders
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()

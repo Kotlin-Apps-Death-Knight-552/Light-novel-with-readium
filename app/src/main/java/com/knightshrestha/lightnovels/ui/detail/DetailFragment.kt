@@ -70,7 +70,6 @@ class DetailFragment : Fragment() {
 
                     viewModel.updateSeriesItem(
                         seriesWithBooks.seriesItem.copy(
-                            seriesTitle = metaObject.title,
                             seriesAuthor = metaObject.author,
                             seriesGenres = metaObject.genres,
                             seriesSynopsis = metaObject.synopsis
